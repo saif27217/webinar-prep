@@ -7,10 +7,10 @@
         <mxCell id="1" parent="0"/>
 
         <!-- Title -->
-        <mxCell id="title" value="IDDM Clinical Decision Algorithm" style="text;html=1;fontSize=32;fontStyle=1;fontColor=#e8e8ed;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="title" value="IDDM Clinical Decision Algorithm" style="text;html=1;fontSize=32;fontStyle=1;fontColor=#1a1a1a;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="560" y="20" width="800" height="50" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="From Risk Screening to Staged Management" style="text;html=1;fontSize=18;fontColor=#8b8b9e;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="From Risk Screening to Staged Management" style="text;html=1;fontSize=18;fontColor=#555555;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="660" y="65" width="600" height="30" as="geometry"/>
         </mxCell>
 
@@ -106,8 +106,8 @@
         </mxCell>
 
         <!-- Footer -->
-        <mxCell id="footer" value="Based on ISPAD 2024 Guidelines  |  ADA Standards of Care 2025" style="text;html=1;fontSize=12;fontColor=#5a5a6e;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="660" y="1050" width="600" height="25" as="geometry"/>
+        <mxCell id="footer" value="Based on ISPAD 2024 Guidelines  |  ADA Standards of Care 2025" style="text;html=1;fontSize=14;fontColor=#555555;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="660" y="1020" width="600" height="25" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
