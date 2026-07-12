@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDDM Biomarkers — From Prediction to Prevention</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0b;
+    --surface: #111113;
+    --surface-alt: #18181b;
+    --border: #232329;
+    --text-primary: #e8e8ed;
+    --text-secondary: #8b8b9e;
+    --text-tertiary: #5a5a6e;
+    --accent: #5b5bd6;
+    --accent-dim: rgba(91, 91, 214, 0.12);
+    --accent-border: rgba(91, 91, 214, 0.3);
+    --green: #22c55e;
+    --green-dim: rgba(34, 197, 94, 0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239, 68, 68, 0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245, 158, 11, 0.12);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', monospace;
+    --slide-w: 1920px;
+    --slide-h: 1080px;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Slide container ── */
+  #deck {
+    width: 100vw; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide {
+    width: var(--slide-w);
+    height: var(--slide-h);
+    background: var(--bg);
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale));
+    transform-origin: center center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    overflow: hidden;
+    display: grid;
+    padding: 80px 120px;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .slide.prev {
+    opacity: 0;
+  }
+
+  /* ── Slide counter ── */
+  #counter {
+    position: fixed;
+    bottom: 28px; right: 36px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--text-tertiary);
+    z-index: 100;
+    letter-spacing: 0.05em;
+    user-select: none;
+  }
+
+  /* ── Navigation hint ── */
+  #nav-hint {
+    position: fixed;
+    bottom: 28px; left: 36px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    z-index: 100;
+    opacity: 0.5;
+    user-select: none;
+  }
+
+  /* ── Typography ── */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+  }
+
+  h1 { font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+  h2 { font-size: 56px; font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; }
+  h3 { font-size: 36px; font-weight: 600; line-height: 1.2; letter-spacing: -0.015em; }
+  h4 { font-size: 28px; font-weight: 600; line-height: 1.25; }
+
+  .text-primary { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
+  .text-accent { color: var(--accent); }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-amber { color: var(--amber); }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 22px;
+  }
+  thead th {
+    text-align: left;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  tbody td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(odd) td { background: var(--surface); }
+  tbody tr:nth-child(even) td { background: var(--surface-alt); }
+  tbody tr:hover td { background: rgba(91, 91, 214, 0.06); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .card-accent {
+    border-color: var(--accent-border);
+    background: var(--accent-dim);
+  }
+
+  /* ── Tags / chips ── */
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-right: 8px;
+  }
+  .tag-accent { background: var(--accent-dim); color: var(--accent); }
+  .tag-green { background: var(--green-dim); color: var(--green); }
+  .tag-red { background: var(--red-dim); color: var(--red); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); }
+
+  /* ── Stat blocks ── */
+  .stat-grid {
+    display: grid;
+    gap: 20px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* ── List ── */
+  .content-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .content-list li {
+    font-size: 26px;
+    line-height: 1.4;
+    color: var(--text-primary);
+    padding-left: 28px;
+    position: relative;
+  }
+  .content-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 12px;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: white; overflow: visible; }
+    .slide {
+      position: relative;
+      top: 0; left: 0;
+      transform: none;
+      opacity: 1 !important;
+      pointer-events: auto;
+      page-break-after: always;
+      background: white;
+      color: #111;
+    }
+    #counter, #nav-hint { display: none; }
+    .section-label { color: #5b5bd6; }
+    .text-primary { color: #111; }
+    .text-secondary { color: #555; }
+    table thead th { color: #333; border-color: #ccc; }
+    tbody td { border-color: #ddd; color: #222; }
+    tbody tr:nth-child(odd) td { background: #f9f9f9; }
+    tbody tr:nth-child(even) td { background: #fff; }
+    .card, .stat-card { border-color: #ddd; background: #f5f5f5; }
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .slide { transition: opacity 0.1s ease; }
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 1: Title                                      -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide active" data-slide="1" style="grid-template-rows: 1fr auto auto; place-items: center; text-align: center;">
+  <div>
+    <div class="section-label" style="margin-bottom: 32px;">Webinar 2024</div>
+    <h1 style="margin-bottom: 24px;">IDDM Biomarkers</h1>
+    <p style="font-size: 36px; font-weight: 300; color: var(--text-secondary); letter-spacing: -0.01em;">From Prediction to Prevention</p>
+  </div>
+  <div style="width: 80px; height: 2px; background: var(--accent); border-radius: 1px;"></div>
+  <p style="font-size: 18px; color: var(--text-tertiary); font-family: var(--font-mono);">Dr. Saif &mdash; Biochemistry &amp; Clinical Medicine</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 2: Agenda                                      -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="2" style="grid-template-rows: auto 1fr; gap: 48px;">
+  <div>
+    <div class="section-label">Overview</div>
+    <h2>Agenda</h2>
+  </div>
+  <ul class="content-list" style="justify-self: start; max-width: 1100px;">
+    <li>What is IDDM &mdash; pathogenesis and classification</li>
+    <li>Five autoimmune autoantibodies: targets, prevalence, clinical utility</li>
+    <li>Deep dive: GAD65, IA-2A, IAA, ZnT8A</li>
+    <li>Genetic risk: HLA haplotypes and polygenic risk scores</li>
+    <li>Functional biomarkers: C-peptide and metabolic staging</li>
+    <li>Assay platforms and emerging technologies</li>
+    <li>Key clinical numbers and pearls</li>
+    <li>ISPAD 2024 guidelines and future directions</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 3: Fundamentals                                -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="3" style="grid-template-rows: auto 1fr; gap: 40px;">
+  <div>
+    <div class="section-label">Background</div>
+    <h2>What is IDDM?</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+    <div>
+      <p style="font-size: 26px; line-height: 1.5; color: var(--text-secondary); margin-bottom: 32px;">
+        <span class="text-primary" style="font-weight: 600;">Insulin-Dependent Diabetes Mellitus</span> is an autoimmune condition characterized by the selective destruction of pancreatic <span class="text-accent">beta cells</span> in the islets of Langerhans.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px;">
+          <span class="stat-value" style="font-size: 32px; color: var(--red);">5-10%</span>
+          <span style="font-size: 20px; color: var(--text-secondary);">of all diabetes cases are Type 1</span>
+        </div>
+        <div class="card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px;">
+          <span class="stat-value" style="font-size: 32px; color: var(--amber);">~8.4M</span>
+          <span style="font-size: 20px; color: var(--text-secondary);">people living with T1D worldwide</span>
+        </div>
+        <div class="card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px;">
+          <span class="stat-value" style="font-size: 32px; color: var(--accent);">Peak</span>
+          <span style="font-size: 20px; color: var(--text-secondary);">incidence ages 4-6 and 10-14 years</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4 style="margin-bottom: 20px; color: var(--accent);">Pathogenesis</h4>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="card" style="padding: 16px 20px; border-left: 3px solid var(--accent);">
+          <span class="tag tag-accent">1</span> <span style="font-size: 20px;">Genetic susceptibility (HLA + polygenic)</span>
+        </div>
+        <div class="card" style="padding: 16px 20px; border-left: 3px solid var(--amber);">
+          <span class="tag tag-amber">2</span> <span style="font-size: 20px;">Environmental trigger (viral, dietary)</span>
+        </div>
+        <div class="card" style="padding: 16px 20px; border-left: 3px solid var(--red);">
+          <span class="tag tag-red">3</span> <span style="font-size: 20px;">Autoimmune activation (autoantibody appearance)</span>
+        </div>
+        <div class="card" style="padding: 16px 20px; border-left: 3px solid var(--red);">
+          <span class="tag tag-red">4</span> <span style="font-size: 20px;">Insulitis and progressive beta-cell loss</span>
+        </div>
+        <div class="card" style="padding: 16px 20px; border-left: 3px solid var(--red);">
+          <span class="tag tag-red">5</span> <span style="font-size: 20px;">Clinical diabetes (Stage 3)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 4: Five Autoantibodies                        -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="4" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Autoimmunity</div>
+    <h2>Five Autoantibodies</h2>
+  </div>
+  <div style="overflow: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 160px;">Antibody</th>
+          <th style="width: 300px;">Target Antigen</th>
+          <th style="width: 200px;">Prevalence</th>
+          <th>Key Feature</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight: 600; color: var(--accent);">GADA</td>
+          <td>Glutamic acid decarboxylase 65 (GAD65)</td>
+          <td style="font-family: var(--font-mono);">70&ndash;80%</td>
+          <td>Most sensitive in adults; persists longest</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; color: var(--accent);">IA-2A</td>
+          <td>Insulinoma-associated antigen-2</td>
+          <td style="font-family: var(--font-mono);">55&ndash;75%</td>
+          <td>Highest specificity; strong predictor</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; color: var(--accent);">IAA</td>
+          <td>Insulin (proinsulin)</td>
+          <td style="font-family: var(--font-mono);">50&ndash;70%</td>
+          <td>First to appear in young children</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; color: var(--accent);">ZnT8A</td>
+          <td>Zinc transporter 8 (SLC30A8)</td>
+          <td style="font-family: var(--font-mono);">60&ndash;80%</td>
+          <td>Adds 10&ndash;15% to panel sensitivity</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; color: var(--text-secondary);">IA-2&beta;</td>
+          <td>Insulinoma-associated antigen-2 beta</td>
+          <td style="font-family: var(--font-mono);">~30%</td>
+          <td>Research marker; limited clinical data</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 5: GAD65 Deep Dive                            -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="5" style="grid-template-rows: auto 1fr; gap: 36px;">
+  <div>
+    <div class="section-label">Deep Dive</div>
+    <h2>GAD65 <span class="text-secondary" style="font-weight: 400;">&mdash; The Workhorse</span></h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="stat-card">
+          <div class="stat-value" style="color: var(--green);">53%</div>
+          <div class="stat-label">Sensitivity (standalone)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: var(--green);">93%</div>
+          <div class="stat-label">Specificity</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: var(--accent);">70&ndash;80%</div>
+          <div class="stat-label">Prevalence in T1D</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: var(--amber);">10+</div>
+          <div class="stat-label">Years persistence</div>
+        </div>
+      </div>
+      <div class="card card-accent">
+        <h4 style="font-size: 20px; margin-bottom: 8px; color: var(--accent);">Most SENSITIVE Adult Marker</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          GADA is the single best antibody to detect adult-onset autoimmune diabetes. In LADA (Latent Autoimmune Diabetes in Adults), GADA positivity is the defining criterion.
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card" style="border-left: 3px solid var(--red);">
+        <h4 style="font-size: 20px; margin-bottom: 12px; color: var(--red);">Clinical Pearl: Stiff-Person Syndrome</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          High-titer GADA (&gt;2000 IU/mL) are found in <span class="text-red" style="font-weight: 600;">Stiff-Person Syndrome</span> (SPS), a rare neurological disorder. Up to <span class="text-primary" style="font-weight: 600;">30% of SPS patients</span> have concurrent T1D, and ~80% have GADA.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 12px;">Detection Platforms</h4>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span class="tag tag-accent">Radioimmunoassay (RIA)</span>
+          <span class="tag tag-accent">ELISA</span>
+          <span class="tag tag-accent">Electrochemiluminescence</span>
+          <span class="tag tag-accent">Simoa</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Persistence</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          GADA can remain detectable for <span class="text-primary" style="font-weight: 600;">decades</span> after diagnosis, making it useful for long-term autoimmune tracking and differential diagnosis.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 6: IA-2A + IAA                                -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="6" style="grid-template-rows: auto 1fr; gap: 36px;">
+  <div>
+    <div class="section-label">Deep Dive</div>
+    <h2>IA-2A + IAA <span class="text-secondary" style="font-weight: 400;">&mdash; Specificity Meets Timing</span></h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+    <!-- IA-2A -->
+    <div class="card" style="display: flex; flex-direction: column; gap: 20px; border-color: var(--accent-border);">
+      <div>
+        <span class="tag tag-accent" style="margin-bottom: 12px; display: inline-block;">IA-2A</span>
+        <h3 style="color: var(--text-primary); margin-top: 8px;">Most SPECIFIC</h3>
+      </div>
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--green);">99%</div>
+          <div class="stat-label">Specificity</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px;">55&ndash;75%</div>
+          <div class="stat-label">Prevalence in T1D</div>
+        </div>
+      </div>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        IA-2A is a tyrosine phosphatase-like protein localized to insulin secretory granules. Its presence strongly predicts progression to clinical T1D.
+      </p>
+      <div style="background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 8px; padding: 16px 20px;">
+        <p style="font-size: 16px; color: var(--accent); font-weight: 500;">
+          IA-2A positivity + HLA high-risk = ~80% 5-year progression rate
+        </p>
+      </div>
+    </div>
+    <!-- IAA -->
+    <div class="card" style="display: flex; flex-direction: column; gap: 20px; border-color: rgba(34, 197, 94, 0.3);">
+      <div>
+        <span class="tag tag-green" style="margin-bottom: 12px; display: inline-block;">IAA</span>
+        <h3 style="color: var(--text-primary); margin-top: 8px;">FIRST to Appear in Children</h3>
+      </div>
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--amber);">50&ndash;70%</div>
+          <div class="stat-label">Prevalence (children)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--green);">~30%</div>
+          <div class="stat-label">Prevalence (adults)</div>
+        </div>
+      </div>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        Insulin autoantibodies are typically the <span class="text-primary" style="font-weight: 600;">first autoantibody</span> to appear in young children (&lt;5 years), often preceding clinical symptoms by years.
+      </p>
+      <div style="background: var(--green-dim); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 16px 20px;">
+        <p style="font-size: 16px; color: var(--green); font-weight: 500;">
+          IAA as the sole antibody: 5-year risk ~15% | IAA + 1 more: 5-year risk ~50%
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 7: ZnT8A                                      -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="7" style="grid-template-rows: auto 1fr; gap: 36px;">
+  <div>
+    <div class="section-label">Deep Dive</div>
+    <h2>ZnT8A <span class="text-secondary" style="font-weight: 400;">&mdash; The Gap-Filler</span></h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: start;">
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div class="stat-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--green);">60&ndash;80%</div>
+          <div class="stat-label">Prevalence in T1D</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--accent);">+10&ndash;15%</div>
+          <div class="stat-label">Added panel sensitivity</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="font-size: 36px; color: var(--green);">&gt;95%</div>
+          <div class="stat-label">4-antibody panel sensitivity</div>
+        </div>
+      </div>
+      <div class="card card-accent">
+        <h4 style="font-size: 22px; margin-bottom: 12px; color: var(--accent);">Panel Impact</h4>
+        <p style="font-size: 20px; color: var(--text-secondary); line-height: 1.5;">
+          Adding ZnT8A to the standard 3-antibody panel increases detection from approximately <span class="text-primary" style="font-weight: 600;">80% to 90%</span> of at-risk individuals. The complete 4-antibody panel achieves <span class="text-green" style="font-weight: 600;">&gt;95% sensitivity</span>.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Clinical Utility</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          ZnT8A is particularly useful in <span class="text-primary" style="font-weight: 600;">seronegative</span> cases where the standard panel is negative but clinical suspicion remains high.
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <h4 style="font-size: 20px; margin-bottom: 8px; color: var(--green);">FDA Cleared</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          ZnT8A assays have received FDA clearance, validating their role in routine clinical screening for T1D risk.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Independent Prognostic Value</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          ZnT8A positivity independently predicts faster progression to Stage 3, even when adjusting for other autoantibodies and HLA status.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Target</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          Zinc transporter 8 (SLC30A8) mediates zinc transport into insulin secretory granules, essential for insulin crystallization and storage.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 8: HLA Genetics                               -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="8" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Genetics</div>
+    <h2>HLA Haplotypes <span class="text-secondary" style="font-weight: 400;">&mdash; The Major Determinant</span></h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px;">
+    <div style="overflow: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Haplotype</th>
+            <th>Risk Level</th>
+            <th>Population Freq.</th>
+            <th>T1D OR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 600; font-family: var(--font-mono);">DR3-DQ2</td>
+            <td><span class="tag tag-red">High Risk</span></td>
+            <td style="font-family: var(--font-mono);">~25%</td>
+            <td style="font-family: var(--font-mono);">~3</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; font-family: var(--font-mono);">DR4-DQ8</td>
+            <td><span class="tag tag-red">High Risk</span></td>
+            <td style="font-family: var(--font-mono);">~30%</td>
+            <td style="font-family: var(--font-mono);">~6</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; font-family: var(--font-mono);">DR3/DR4</td>
+            <td><span class="tag tag-red">Highest Risk</span></td>
+            <td style="font-family: var(--font-mono);">~3&ndash;4%</td>
+            <td style="font-family: var(--font-mono); color: var(--red); font-weight: 600;">15&ndash;20</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 600; font-family: var(--font-mono);">DR2-DQ6</td>
+            <td><span class="tag tag-green">Protective</span></td>
+            <td style="font-family: var(--font-mono);">~25%</td>
+            <td style="font-family: var(--font-mono); color: var(--green);">0.03&ndash;0.1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card card-accent" style="text-align: center; padding: 32px;">
+        <div class="stat-value" style="font-size: 48px; color: var(--accent); margin-bottom: 8px;">~50%</div>
+        <div class="stat-label" style="font-size: 18px;">of genetic risk explained by HLA region</div>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">DR3/DR4 Heterozygotes</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          Heterozygous DR3/DR4 carriers have the <span class="text-red" style="font-weight: 600;">highest genetic risk</span> for T1D. This genotype accounts for approximately 30&ndash;40% of childhood-onset T1D.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Protective Haplotypes</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          DR2-DQ6 is strongly protective, reducing T1D risk by 90%+ through <span class="text-green" style="font-weight: 600;">thymic negative selection</span> of autoreactive T cells.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 9: Polygenic Risk Scores                      -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="9" style="grid-template-rows: auto 1fr; gap: 36px;">
+  <div>
+    <div class="section-label">Genetics</div>
+    <h2>Polygenic Risk Scores</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+    <div class="stat-card" style="text-align: center;">
+      <div class="stat-value" style="font-size: 48px; color: var(--accent);">0.82&ndash;0.90</div>
+      <div class="stat-label" style="font-size: 18px;">PRS AUC</div>
+      <div style="margin-top: 8px;">
+        <span class="tag tag-accent">Standard PRS</span>
+      </div>
+    </div>
+    <div class="stat-card" style="text-align: center; border-color: var(--green); background: var(--green-dim);">
+      <div class="stat-value" style="font-size: 48px; color: var(--green);">&ge;0.90</div>
+      <div class="stat-label" style="font-size: 18px;">Combined Risk Score (CRS)</div>
+      <div style="margin-top: 8px;">
+        <span class="tag tag-green">Enhanced</span>
+      </div>
+    </div>
+    <div class="stat-card" style="text-align: center;">
+      <div class="stat-value" style="font-size: 48px;">60+</div>
+      <div class="stat-label" style="font-size: 18px;">GWAS Loci Identified</div>
+      <div style="margin-top: 8px;">
+        <span class="tag tag-accent">Non-HLA</span>
+      </div>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px;">
+    <div class="card">
+      <h4 style="font-size: 20px; margin-bottom: 12px;">What PRS Captures</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        The Polygenic Risk Score aggregates effects from 60+ non-HLA GWAS loci including <span class="text-primary" style="font-weight: 600;">INS, PTPN22, CTLA4, IL2RA, IL7R</span>, and others. Combined with HLA, it provides comprehensive genetic risk stratification.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="font-size: 20px; margin-bottom: 12px;">Combined Risk Score (CRS)</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        CRS integrates PRS with autoantibody data, family history, and clinical features to achieve <span class="text-green" style="font-weight: 600;">AUC &ge;0.90</span> &mdash; outperforming any single biomarker for predicting 5-year progression to clinical T1D.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 10: C-Peptide                                 -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="10" style="grid-template-rows: auto 1fr; gap: 36px;">
+  <div>
+    <div class="section-label">Functional Biomarker</div>
+    <h2>C-Peptide <span class="text-secondary" style="font-weight: 400;">&mdash; The Gold Standard</span></h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card card-accent" style="text-align: center; padding: 36px;">
+        <p style="font-size: 18px; color: var(--accent); font-weight: 500; margin-bottom: 12px;">ONLY direct measure of beta-cell mass</p>
+        <div class="stat-value" style="font-size: 52px; color: var(--green);">&lt;0.6 nmol/L</div>
+        <div class="stat-label" style="font-size: 18px;">Threshold for severe deficiency</div>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">What is C-Peptide?</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          C-Peptide is cleaved from proinsulin during insulin biosynthesis. It is secreted in <span class="text-primary" style="font-weight: 600;">equimolar amounts</span> to insulin, making it an accurate marker of endogenous insulin production.
+        </p>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 12px;">MMTT (Mixed-Meal Tolerance Test)</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          The standard provocative test for residual beta-cell function. Patient ingests a standardized meal (Sustacal), and C-peptide is measured at <span class="text-primary" style="font-weight: 600;">0, 30, 60, 90, and 120 minutes</span>.
+        </p>
+        <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <span class="tag tag-green">&ge;0.2 nmol/L: Adequate</span>
+          <span class="tag tag-amber">0.1&ndash;0.2: Marginal</span>
+          <span class="tag tag-red">&lt;0.1: Undetectable</span>
+        </div>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 12px;">Clinical Applications</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+          <li style="font-size: 18px; color: var(--text-secondary); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span> Distinguishing T1D from T2D</li>
+          <li style="font-size: 18px; color: var(--text-secondary); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span> Monitoring disease progression</li>
+          <li style="font-size: 18px; color: var(--text-secondary); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span> Evaluating therapeutic efficacy</li>
+          <li style="font-size: 18px; color: var(--text-secondary); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--accent);">&bull;</span> Predicting hypoglycemia risk</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <p style="font-size: 18px; color: var(--text-primary); font-weight: 500;">
+          C-peptide decline precedes clinical symptoms by months to years, enabling earlier intervention.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 11: Staging System                            -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="11" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Classification</div>
+    <h2>T1D Staging System</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+    <div style="overflow: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 100px;">Stage</th>
+            <th>Autoantibodies</th>
+            <th>Dysglycemia</th>
+            <th>Symptoms</th>
+            <th style="width: 160px;">Risk of Stage 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight: 700; color: var(--green); font-size: 24px;">1</td>
+            <td>&ge;2 present</td>
+            <td>Normal</td>
+            <td>None</td>
+            <td style="font-family: var(--font-mono);">~10% / year</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700; color: var(--amber); font-size: 24px;">2</td>
+            <td>&ge;2 present</td>
+            <td>Abnormal</td>
+            <td>None</td>
+            <td style="font-family: var(--font-mono);">~30% / year</td>
+          </tr>
+          <tr>
+            <td style="font-weight: 700; color: var(--red); font-size: 24px;">3</td>
+            <td>&ge;1 present</td>
+            <td>Abnormal</td>
+            <td>Clinical</td>
+            <td style="font-family: var(--font-mono); color: var(--red);">Diagnosis</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card" style="border: 2px solid var(--accent-border); background: var(--accent-dim); text-align: center; padding: 28px;">
+        <h4 style="font-size: 20px; color: var(--accent); margin-bottom: 12px;">Teplizumab (Tzield)</h4>
+        <div class="stat-value" style="font-size: 40px; color: var(--green);">~2 years</div>
+        <div class="stat-label" style="font-size: 16px;">Delays Stage 3 progression</div>
+        <p style="font-size: 15px; color: var(--text-secondary); margin-top: 12px; line-height: 1.4;">
+          Anti-CD3 monoclonal antibody &mdash; first FDA-approved therapy for T1D staging. Approved 2022 for Stage 2.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 18px; margin-bottom: 8px;">Key Point</h4>
+        <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+          Stage 2 is the <span class="text-primary" style="font-weight: 600;">optimal intervention window</span> &mdash; dysglycemia is detectable but symptoms have not yet developed.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 12: Assay Platforms                           -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="12" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Methodology</div>
+    <h2>Assay Platforms</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+    <table>
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Sensitivity</th>
+          <th>Throughput</th>
+          <th>Cost</th>
+          <th>Status</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight: 600; font-family: var(--font-mono);">RIA</td>
+          <td style="font-family: var(--font-mono);">~20 U/mL</td>
+          <td>Low</td>
+          <td><span class="tag tag-green">Low</span></td>
+          <td>Reference standard</td>
+          <td style="color: var(--text-tertiary);">Declining</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; font-family: var(--font-mono);">ELISA</td>
+          <td style="font-family: var(--font-mono);">~5 U/mL</td>
+          <td>Medium</td>
+          <td><span class="tag tag-green">Low-Med</span></td>
+          <td>Widely available</td>
+          <td style="color: var(--text-secondary);">Stable</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; font-family: var(--font-mono);">ECL</td>
+          <td style="font-family: var(--font-mono);">~1 U/mL</td>
+          <td>High</td>
+          <td><span class="tag tag-amber">Medium</span></td>
+          <td>Multiplex capable</td>
+          <td style="color: var(--green);">Growing</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600; font-family: var(--font-mono);">Simoa</td>
+          <td style="font-family: var(--font-mono);">~0.01 U/mL</td>
+          <td>High</td>
+          <td><span class="tag tag-red">High</span></td>
+          <td>Ultra-sensitive</td>
+          <td style="color: var(--green);">Emerging</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div class="card card-accent">
+        <h4 style="font-size: 20px; margin-bottom: 8px; color: var(--accent);">Industry Trend</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          Movement toward <span class="text-primary" style="font-weight: 600;">multiplex platforms</span> that simultaneously measure multiple autoantibodies from a single sample, reducing volume requirements and cost per analyte.
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Standardization</h4>
+        <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+          The <span class="text-primary" style="font-weight: 600;">Islet Autoantibody Standardization Program (IASP)</span> provides reference sera for harmonizing results across laboratories worldwide.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 13: Emerging Biomarkers                       -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="13" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Frontiers</div>
+    <h2>Emerging Biomarkers</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="tag tag-accent" style="align-self: start;">PTM Autoantigens</span>
+      <h4 style="font-size: 20px;">Post-Translationally Modified</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Citrullinated, deamidated, and hybrid insulin antigens show enhanced immunogenicity and may identify earlier autoimmune activation.
+      </p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="tag tag-accent" style="align-self: start;">Proinsulin:C-Peptide</span>
+      <h4 style="font-size: 20px;">Ratio Biomarker</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Elevated proinsulin:C-peptide ratio reflects defective proinsulin processing, indicating beta-cell stress before overt dysfunction.
+      </p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="tag tag-green" style="align-self: start;">ML + Multi-omic</span>
+      <h4 style="font-size: 20px;">Machine Learning Integration</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Combining genomics, proteomics, metabolomics, and clinical data with ML models for personalized risk prediction exceeding traditional approaches.
+      </p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="tag tag-accent" style="align-self: start;">T-cell Assays</span>
+      <h4 style="font-size: 20px;">Cellular Immunity</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Antigen-specific T-cell activation assays (e.g., T-cell ELISpot) directly measure the effector arm of autoimmunity, complementing antibody-based approaches.
+      </p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="tag tag-accent" style="align-self: start;">Endotyping</span>
+      <h4 style="font-size: 20px;">T1D Endotypes</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Subclassifying T1D by autoimmune profile and metabolic phenotype to enable precision medicine approaches and targeted intervention.
+      </p>
+    </div>
+    <div class="card" style="display: flex; flex-direction: column; gap: 12px; border-color: var(--accent-border); background: var(--accent-dim);">
+      <span class="tag tag-accent" style="align-self: start;">Extracellular Vesicles</span>
+      <h4 style="font-size: 20px;">Exosome Cargo</h4>
+      <p style="font-size: 16px; color: var(--text-secondary); line-height: 1.4;">
+        Beta-cell-derived exosomes carrying miRNAs and autoantigens offer a liquid biopsy approach to monitor disease activity non-invasively.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 14: Key Numbers                               -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="14" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Reference</div>
+    <h2>Key Numbers</h2>
+  </div>
+  <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px;">
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">70&ndash;80%</div>
+      <div class="stat-label">GADA prevalence</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">53%</div>
+      <div class="stat-label">GADA sensitivity</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">93%</div>
+      <div class="stat-label">GADA specificity</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">55&ndash;75%</div>
+      <div class="stat-label">IA-2A prevalence</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">99%</div>
+      <div class="stat-label">IA-2A specificity</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--amber);">50&ndash;70%</div>
+      <div class="stat-label">IAA (children)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">60&ndash;80%</div>
+      <div class="stat-label">ZnT8A prevalence</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">&gt;95%</div>
+      <div class="stat-label">4-Ab panel sensitivity</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--red);">15&ndash;20</div>
+      <div class="stat-label">DR3/DR4 odds ratio</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">~50%</div>
+      <div class="stat-label">HLA genetic contribution</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">0.82&ndash;0.90</div>
+      <div class="stat-label">PRS AUC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">60+</div>
+      <div class="stat-label">GWAS loci (non-HLA)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">&lt;0.6</div>
+      <div class="stat-label">C-peptide nmol/L threshold</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">~2 yr</div>
+      <div class="stat-label">Teplizumab delay</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--accent);">5&ndash;10%</div>
+      <div class="stat-label">T1D / all diabetes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 32px; color: var(--green);">&ge;0.90</div>
+      <div class="stat-label">CRS AUC</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 15: Clinical Pearls                           -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="15" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Practice</div>
+    <h2>Clinical Pearls</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div class="card" style="border-left: 3px solid var(--accent);">
+      <h4 style="font-size: 20px; margin-bottom: 12px; color: var(--accent);">IA-2A vs GAD65: Complementary, Not Redundant</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        GADA has higher sensitivity; IA-2A has higher specificity. Together they cover more at-risk individuals than either alone. Always test both.
+      </p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--amber);">
+      <h4 style="font-size: 20px; margin-bottom: 12px; color: var(--amber);">LADA: The Missed Diagnosis</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        ~10% of adults diagnosed with T2D actually have LADA. GADA screening should be considered in any non-obese adult with apparently T2D, especially those progressing rapidly to insulin dependence.
+      </p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--red);">
+      <h4 style="font-size: 20px; margin-bottom: 12px; color: var(--red);">ICI-Induced T1D: A Growing Concern</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        Immune checkpoint inhibitors can trigger autoimmune T1D as an adverse event. Monitoring GADA and C-peptide during ICI therapy enables early detection and intervention.
+      </p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--green);">
+      <h4 style="font-size: 20px; margin-bottom: 12px; color: var(--green);">Standardization Matters</h4>
+      <p style="font-size: 18px; color: var(--text-secondary); line-height: 1.5;">
+        Autoantibody results vary significantly between laboratories. Always use IASP-standardized assays and reference sera. A positive result should be confirmed with a second method.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 16: ISPAD 2024 Guidelines                     -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="16" style="grid-template-rows: auto 1fr; gap: 32px;">
+  <div>
+    <div class="section-label">Guidelines</div>
+    <h2>ISPAD 2024 Recommendations</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">1</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Genetic Screening</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Screen first-degree relatives of T1D patients with HLA genotyping and autoantibody panels.</p>
+      </div>
+    </div>
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">2</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Multi-Antibody Testing</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Use at least 3 autoantibodies (GADA, IAA, IA-2A) for risk assessment; add ZnT8A when available.</p>
+      </div>
+    </div>
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">3</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Staging Monitoring</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Regularly monitor at-risk individuals through staging with OGTT and C-peptide to detect Stage 2 early.</p>
+      </div>
+    </div>
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">4</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Teplizumab Consideration</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Discuss Teplizumab (Tzield) for Stage 2 patients, particularly those with high-risk HLA and multiple autoantibodies.</p>
+      </div>
+    </div>
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">5</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Psychosocial Support</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Provide comprehensive psychosocial support for individuals and families during the pre-symptomatic period.</p>
+      </div>
+    </div>
+    <div class="card" style="display: flex; gap: 20px; align-items: start; padding: 24px 28px;">
+      <div style="font-family: var(--font-mono); font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1;">6</div>
+      <div>
+        <h4 style="font-size: 20px; margin-bottom: 8px;">Standardized Assays</h4>
+        <p style="font-size: 17px; color: var(--text-secondary); line-height: 1.4;">Use IASP-standardized assays for all autoantibody testing to ensure consistent and comparable results.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ -->
+<!-- SLIDE 17: Thank You                                 -->
+<!-- ════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="17" style="grid-template-rows: 1fr auto auto; place-items: center; text-align: center;">
+  <div>
+    <div class="section-label" style="margin-bottom: 32px;">Thank You</div>
+    <h1 style="margin-bottom: 24px;">Questions &amp; Discussion</h1>
+    <p style="font-size: 28px; color: var(--text-secondary); font-weight: 300;">From Prediction to Prevention</p>
+  </div>
+  <div style="width: 80px; height: 2px; background: var(--accent); border-radius: 1px;"></div>
+  <div style="max-width: 900px;">
+    <h4 style="font-size: 16px; color: var(--text-tertiary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">Key References</h4>
+    <p style="font-size: 15px; color: var(--text-tertiary); line-height: 1.6; font-family: var(--font-mono);">
+      Insel et al. Diabetes Care 2010 | Ziegler et al. Diabetes 2013 | Herold et al. NEJM 2019 (Teplizumab) | Atkinson et al. Diabetes Care 2024 | ISPAD Clinical Practice Consensus Guidelines 2024 | Peakman &amp; Tree T1D Immunotherapy 2023 | Eisenbarth GS Type 1 Diabetes 2023
+    </p>
+  </div>
+</div>
+</div>
+
+<div id="counter">1 / 17</div>
+<div id="nav-hint">Arrow keys or click to navigate</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const total = slides.length;
+  let current = parseInt(localStorage.getItem('iddm-slide') || '1', 10);
+  if (current < 1 || current > total) current = 1;
+
+  function computeScale() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const sw = 1920, sh = 1080;
+    return Math.min(vw / sw, vh / sh);
+  }
+
+  function applyScale() {
+    const s = computeScale();
+    document.querySelectorAll('.slide').forEach(el => {
+      el.style.setProperty('--scale', s);
+    });
+  }
+
+  function goTo(n) {
+    if (n < 1 || n > total || n === current) return;
+    slides.forEach(el => {
+      el.classList.remove('active', 'prev');
+      const idx = parseInt(el.dataset.slide);
+      if (idx === n) el.classList.add('active');
+      else if (idx < n) el.classList.add('prev');
+    });
+    current = n;
+    counter.textContent = current + ' / ' + total;
+    localStorage.setItem('iddm-slide', current);
+  }
+
+  // Initial state
+  applyScale();
+  slides.forEach(el => {
+    el.classList.remove('active', 'prev');
+    const idx = parseInt(el.dataset.slide);
+    if (idx === current) el.classList.add('active');
+    else if (idx < current) el.classList.add('prev');
+  });
+  counter.textContent = current + ' / ' + total;
+
+  window.addEventListener('resize', applyScale);
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(1); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(total); }
+  });
+
+  // Click navigation (left half = back, right half = forward)
+  document.addEventListener('click', function(e) {
+    const x = e.clientX / window.innerWidth;
+    if (x < 0.3) goTo(current - 1);
+    else if (x > 0.7) goTo(current + 1);
+  });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e) {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 60) {
+      if (dx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+  });
+})();
+</script>
+</body>
+</html>
