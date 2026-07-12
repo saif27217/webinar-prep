@@ -7,6 +7,7 @@ IDDM Biomarkers webinar preparation kit. Contains mastery document, audio briefi
 - `docs/` — Markdown reference documents
 - `audio/` — MP3 audio briefings
 - `slides/` — Self-contained HTML slide decks (open in browser)
+- `diagrams/` — Drawio flowcharts (light theme, 3x exported PNGs + editable source)
 - `scripts/` — Reproducible generation scripts
 
 ## Conventions

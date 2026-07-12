@@ -9,7 +9,9 @@ Complete materials for a 20-minute expert-level webinar on **IDDM (Type 1 Diabet
 | `docs/IDDM_Biomarkers_Mastery.md` | Full 339-line reference document with 12 sections, tables, clinical algorithm, 20 FAQ questions |
 | `audio/IDDM_Biomarkers_Audio.mp3` | ~7 min audio briefing (Edge TTS, en-US-GuyNeural) |
 | `slides/IDDM_Biomarkers_Slides.html` | Self-contained 17-slide HTML deck (Linear dark theme, keyboard navigation) |
-| `scripts/generate_audio.sh` | Reproducible audio generation script |
+| `diagrams/Clinical_Decision_Algorithm.png` | Clinical staging flowchart (3x drawio export, light theme) |
+| `diagrams/Autoantibody_Panel_Interpretation.png` | Autoantibody testing strategy flowchart (3x drawio export) |
+| `diagrams/*.drawio` | Editable drawio source files |
 
 ## Google Workspace
 
