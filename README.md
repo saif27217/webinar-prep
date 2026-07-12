@@ -15,7 +15,7 @@ A complete preparation kit for a 20-minute webinar on Type 1 Diabetes (IDDM) bio
 ## Google Workspace
 
 - [Google Doc](https://docs.google.com/document/d/15cKbtHCAEyQ9zm9eLfJ6ZIaZD4ghKXXwXJtspLPLupc/edit) — Formatted document
-- [Google Slides](https://docs.google.com/presentation/d/1N2nEsGUNrx5quxsgo8rSwm515Ei1E-O5yeIvqC3xXm8/edit) — 17-slide presentation (professional gray theme)
+- [Google Slides](https://docs.google.com/presentation/d/1_Ycy4NDfW325lxkbPp9zUcRCBacWvF4Ri1hosqjBxuo/edit) — 17-slide presentation (recreated, professional gray theme)
 
 ## Slides Preview
 
