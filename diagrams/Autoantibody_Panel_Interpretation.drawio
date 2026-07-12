@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-07-12T00:00:00.000Z" agent="Hermes" version="24.0.0" type="device">
+  <diagram id="autoantibody-flow" name="Autoantibody Panel Interpretation">
+    <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="Autoantibody Panel Interpretation Flowchart" style="text;html=1;fontSize=32;fontStyle=1;fontColor=#e8e8ed;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="460" y="20" width="1000" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Which Test, When, and What It Means" style="text;html=1;fontSize=18;fontColor=#8b8b9e;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="660" y="65" width="600" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- START: Patient -->
+        <mxCell id="start" value="Patient at Risk&#xa;(T1D family hx, genetic&#xa;predisposition, symptoms)" style="shape=ellipse;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fontColor=#ffffff;fillColor=#5b5bd6;strokeColor=#7c7cf7;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="110" width="280" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Initial Panel -->
+        <mxCell id="panel" value="INITIAL PANEL&#xa;&#xa;GADA  |  IA-2A  |  IAA  |  ZnT8A&#xa;&#xa;Draw fasting sample for C-peptide" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#5b5bd6;strokeWidth=2;shadow=1;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="720" y="250" width="360" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#5b5bd6;strokeWidth=2;" edge="1" source="start" target="panel" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch: GADA -->
+        <mxCell id="gada" value="GADA&#xa;(GAD65 Antibody)&#xa;&#xa;Sensitivity: 53%&#xa;Specificity: 93%&#xa;&#xa;Most SENSITIVE in adults&#xa;Persistent for years" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#22c55e;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="420" width="230" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_gada" value="GADA" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=12;fontColor=#22c55e;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#22c55e;strokeWidth=1;" edge="1" source="panel" target="gada" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch: IA-2A -->
+        <mxCell id="ia2" value="IA-2A&#xa;(Insulinoma-Associated-2)&#xa;&#xa;Sensitivity: 55-75%&#xa;Most SPECIFIC marker&#xa;&#xa;Strong predictor of&#xa;rapid progression" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#f59e0b;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="360" y="420" width="230" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ia2" value="IA-2A" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=12;fontColor=#f59e0b;exitX=0.25;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#f59e0b;strokeWidth=1;" edge="1" source="panel" target="ia2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch: IAA -->
+        <mxCell id="iaa" value="IAA&#xa;(Insulin Autoantibodies)&#xa;&#xa;50-70% in children&#xa;FIRST to appear&#xa;&#xa;Must draw BEFORE&#xa;insulin therapy" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#ef4444;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="640" y="420" width="230" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_iaa" value="IAA" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=12;fontColor=#ef4444;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#ef4444;strokeWidth=1;" edge="1" source="panel" target="iaa" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch: ZnT8A -->
+        <mxCell id="znt8" value="ZnT8A&#xa;(Zinc Transporter 8)&#xa;&#xa;60-80% prevalence&#xa;Adds 10-15% to panel&#xa;&#xa;FDA cleared&#xa;Independent prognostic value" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#8b5cf6;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="920" y="420" width="230" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_znt8" value="ZnT8A" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=12;fontColor=#8b5cf6;exitX=0.75;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#8b5cf6;strokeWidth=1;" edge="1" source="panel" target="znt8" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Branch: IA-2B -->
+        <mxCell id="ia2b" value="IA-2beta&#xa;(Research Marker)&#xa;&#xa;Improves risk&#xa;stratification&#xa;&#xa;Not yet clinical&#xa;standard" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontColor=#8b8b9e;fillColor=#111113;strokeColor=#232329;strokeWidth=1;dashed=1;arcSize=8;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="420" width="210" height="150" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ia2b" value="IA-2beta" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=12;fontColor=#8b8b9e;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#232329;strokeWidth=1;" edge="1" source="panel" target="ia2b" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Interpretation Box -->
+        <mxCell id="interp" value="INTERPRETATION&#xa;&#xa;0 positive: Low risk — rescreen in 1-3 years&#xa;1 positive: Moderate risk — confirm + monitor&#xa;2 positive: High risk — Stage 1 T1D&#xa;3-4 positive: Very high risk — rapid progression likely" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#5b5bd6;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=15;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="300" y="650" width="640" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Connect all 4 antibody boxes to interpretation -->
+        <mxCell id="e_i1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;strokeColor=#232329;strokeWidth=1;" edge="1" source="gada" target="interp" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_i2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;strokeColor=#232329;strokeWidth=1;" edge="1" source="ia2" target="interp" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_i3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.6;entryY=0;entryDx=0;entryDy=0;strokeColor=#232329;strokeWidth=1;" edge="1" source="iaa" target="interp" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_i4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.9;entryY=0;entryDx=0;entryDy=0;strokeColor=#232329;strokeWidth=1;" edge="1" source="znt8" target="interp" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Next Step: C-peptide -->
+        <mxCell id="cpep" value="NEXT: C-Peptide Assessment&#xa;&#xa;Fasting + MMTT (Mixed-Meal Tolerance Test)&#xa;Threshold: &lt;0.6 nmol/L = severe deficiency&#xa;ONLY direct measure of beta-cell mass" style="rounded=1;whiteSpace=wrap;html=1;fontSize=15;fontColor=#e8e8ed;fillColor=#111113;strokeColor=#22c55e;strokeWidth=2;shadow=1;arcSize=8;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="300" y="830" width="640" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_cp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#5b5bd6;strokeWidth=2;" edge="1" source="interp" target="cpep" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Assay comparison side box -->
+        <mxCell id="assays" value="ASSAY PLATFORMS&#xa;&#xa;RIA — Gold standard, radioactive&#xa;ELISA — High throughput&#xa;ECL — Automated, quantitative&#xa;Simoa — Ultra-sensitive (research)" style="rounded=1;whiteSpace=wrap;html=1;fontSize=13;fontColor=#8b8b9e;fillColor=#0a0a0b;strokeColor=#232329;strokeWidth=1;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="650" width="280" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Clinical Pearl -->
+        <mxCell id="pearl" value="CLINICAL PEARL:&#xa;GADA persists for years — ideal for LADA screening.&#xa;IAA is the FIRST marker in children — test before insulin." style="shape=note;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fontColor=#f59e0b;fillColor=#1a1508;strokeColor=#f59e0b;strokeWidth=1;size=12;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="830" width="310" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Footer -->
+        <mxCell id="footer" value="Based on ISPAD 2024  |  ADA 2025  |  Harrison's 22nd Edition" style="text;html=1;fontSize=12;fontColor=#5a5a6e;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="660" y="1050" width="600" height="25" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
